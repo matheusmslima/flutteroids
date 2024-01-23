@@ -13,7 +13,22 @@ void main() {
   );
 }
 
-class Player extends SpriteComponent {
+class Player extends SpriteComponent with HasGameRef<Flutteroids> {
+  Player()
+      : super(
+          size: Vector2(50, 50),
+          anchor: Anchor.center,
+        );
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
+    sprite = await gameRef.loadSprite('playerShip1_blue.png');
+
+    position = gameRef.size / 2;
+  }
+
   void move(Vector2 delta) {
     position.add(delta);
   }
@@ -21,19 +36,12 @@ class Player extends SpriteComponent {
 
 class Flutteroids extends FlameGame with PanDetector {
   late Player player;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final playerSprite = await loadSprite('playerShip1_blue.png');
-
-    player = Player()
-      ..sprite = playerSprite
-      ..x = size.x / 2
-      ..y = size.y / 2
-      ..width = 50
-      ..height = 50
-      ..anchor = Anchor.center;
+    player = Player();
 
     add(player);
   }
